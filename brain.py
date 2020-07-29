@@ -3,7 +3,10 @@ import os
 
 class Brain:
     
-    def __init__(self,hiddenlayersizes,numinputs, numoutputs):
+    def __init__(self,hiddenlayersizes,numinputs, numoutputs, load = False):
+        if(load):
+            if(self.load()):
+                return
         self.weights = []
         self.biases = []
         self.inputshape = numinputs
@@ -68,18 +71,31 @@ class Brain:
         for i in range(len(self.weights)):
             np.save("weights/weights" + str(i),self.weights[i])
             np.save("biases/biases" + str(i),self.biases[i])
+        f = open("currepoch.txt","w")
+        f.write(str(self.currepoch))
+        f.close()
+        
 
     def load(self):
         self.weights = []
         self.biases = []
+        if(len(os.listdir("weights"))<1 or len(os.listdir("biases"))<1):
+            return False
         for f in os.listdir("weights"):
-            self.weights.append(np.load(f))
+            self.weights.append(np.load("weights/"+f))
+        for f in os.listdir("biases"):
+            self.biases.append(np.load("biases/"+f))
+        self.inputshape = self.weights[0].shape[1]
+        self.outputshape = self.biases[-1].shape[0]
+        epoch = open("currepoch.txt","r")
+        self.currepoch = int(epoch.read())
+        epoch.close()
+        return True
 
 
             
         
-brain = Brain([10,10,10],14,6)
+brain = Brain([10,10,10],14,6,True)
 brain.mutate()
-brain.printweights()
-print(brain.actionindex(brain.evaluate(np.array([4,4,4,4,4,4,0,4,4,4,4,4,4,0]))))
 brain.save()
+#print(brain.actionindex(brain.evaluate(np.array([4,4,4,4,4,4,0,4,4,4,4,4,4,0]))))
