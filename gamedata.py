@@ -1,4 +1,5 @@
 import numpy as np
+#from matplotlib import pyplot as plt
 
 class DataManager:
 
@@ -28,6 +29,9 @@ class DataManager:
     def mutationaddpoint(self,val):
         self.mutation.append(val)
 
+    def display(self):
+        print("does nothing yet lol")
+
     def load(self):
         try:
             self.winrate = np.load("gamedata/winrate.npy").tolist()
@@ -36,7 +40,7 @@ class DataManager:
             self.mutation = np.load("gamedata/mutation.npy").tolist()
             return True
         except FileNotFoundError:
-            print("no files, creating new ones")
+            print("no data files, creating new ones")
             return False
 
     def save(self):

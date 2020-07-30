@@ -3,6 +3,9 @@
 # 13                 6
 #   0  1  2  3  4  5
 #       PLAYER  True
+
+import random
+
 class Board:
 
 
@@ -20,10 +23,13 @@ class Board:
     def movePiece(self, index):
         #returns 0 on invalid move, 1 on valid move with turn switch, 2 if no player switch
         
-        if(index == len(self.board)-1 or index == len(self.board)/2-1):
+        if(index == len(self.board)-1 or index == int(len(self.board)/2)-1):
             return 0
 
         if(index>int(len(self.board)/2)-2 or index<0):
+            return 0
+
+        if(self.board[index]==0):
             return 0
         
         num = self.board[index]
@@ -41,10 +47,11 @@ class Board:
             stopEmpty = (i%len(self.board)<int(len(self.board)/2)-1) and self.board[i%len(self.board)] == 0
             self.board[i%len(self.board)] += 1
             endnum = i%len(self.board)
-        print(endnum)
 
         
         if(endnum == (int(len(self.board)/2)-1)):
+            if(self.isGameOver()):
+                self.onEnd()
             return 2
 
         if(endnum < (int(len(self.board)/2)-1) and stopEmpty):
@@ -53,14 +60,23 @@ class Board:
             self.board[oppositeIndex] = 0
             self.board[endnum] = 0
 
+        if(self.isGameOver()):
+            self.onEnd()
 
         return 1
 
+    def onEnd(self):
+        for i in range(int(len(self.board)/2)-1):
+            self.board[int(len(self.board)/2)-1] += self.board[i]
+            self.board[i] = 0
+            self.board[len(self.board)-1] += self.board[int(len(self.board)/2)+i]
+            self.board[int(len(self.board)/2)+i] = 0
+
     def score(self):
-        return self.board[len(self.board)/2-1]
+        return self.board[int(len(self.board)/2)]
 
     def scoreDelta(self):
-        return self.board[len(self.board)/2-1]-self.board[len(self.board)-1]
+        return self.board[int(len(self.board)/2)-1]-self.board[len(self.board)-1]
 
     def stonesOnSide(self,side = True):
         x = 0
@@ -84,6 +100,12 @@ class Board:
 
         return s
 
+    def abminimax(self, depth, alpha, beta):
+        if(depth == 0 or self.isGameOver()):
+            return self.stonesOnSide() * 1 if self.player else -1
+        
+            
+
 board = Board()
 while True:
     print('\x1bc')
@@ -91,7 +113,7 @@ while True:
     gameover = board.isGameOver()
     num = "stop"
     if(not gameover):
-        num = input("Index of piece to move: ")
+        num = input("Index of piece to move: ") #random.randint(0,5)
     if(num == "stop"):
         playAgain = input("Play Again?(Y/N)")
         if(playAgain.lower() == 'y'):
