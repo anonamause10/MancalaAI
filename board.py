@@ -5,6 +5,7 @@
 #       PLAYER  True
 
 import random
+from matplotlib import pyplot as plt
 
 class Board:
 
@@ -84,6 +85,12 @@ class Board:
             x += n
         return x
 
+    def stonesOnSideInc(self,side = True):
+        x = 0
+        for n in self.board[(0 if side else (int(len(self.board)/2))):((int(len(self.board)/2)) if side else len(self.board))]:
+            x += n
+        return x
+
     def isGameOver(self):
         return self.stonesOnSide(True) == 0 or self.stonesOnSide(False) == 0 
 
@@ -100,31 +107,102 @@ class Board:
 
         return s
 
-    def abminimax(self, depth, alpha, beta):
-        if(depth == 0 or self.isGameOver()):
-            return self.stonesOnSide() * 1 if self.player else -1
+    def makeDecision(self,depth=2,rand = True):
+        newboard = self.copyboard()
+        newboard.player = True
+        vals = []
+        for i in range(0,int(len(newboard.board)/2)-1):
+            newnewboard = newboard.copyboard()
+            x = newnewboard.movePiece(i)
+            value = -1000000
+            if(x!=0):
+                value = newnewboard.abminimax(depth)
+            vals.append(value)
+        maxval = max(vals)
+        indices = [i for i, x in enumerate(vals) if x == maxval]
+        index = random.choice(indices) if rand else indices[0]
+        return index
         
-            
 
-board = Board()
-while True:
-    print('\x1bc')
-    print(board)
-    gameover = board.isGameOver()
-    num = "stop"
-    if(not gameover):
-        num = input("Index of piece to move: ") #random.randint(0,5)
-    if(num == "stop"):
-        playAgain = input("Play Again?(Y/N)")
-        if(playAgain.lower() == 'y'):
-            board = Board()
-            continue
+    def copyboard(self):
+        return Board(self.board,self.player)
+
+    def abminimax(self, depth, alpha = float('-inf'), beta = float('inf')):
+        if(depth == 0 or self.isGameOver()):
+            return (self.stonesOnSideInc() * (1 if self.player else -1))
+        if(self.player):
+            value = float('-inf')
+            for i in range(0,int(len(self.board)/2)-1):
+                newboard = self.copyboard()
+                num = newboard.movePiece(i)
+                if(num==0):
+                    continue
+                if(num == 1):
+                    newboard = newboard.opposingBoard()
+                value = max(value, newboard.abminimax(depth-1,alpha,beta))
+                alpha = max(alpha,value)
+                if(alpha >= beta):
+                    break
+            return value
         else:
-            print("Game Done")
-            break
-    num = int(num)
-    if(board.movePiece(num)==1):
-        board = board.opposingBoard()
+            value = float('inf')
+            for i in range(0,int(len(self.board)/2)-1):
+                newboard = self.copyboard()
+                num = newboard.movePiece(i)
+                if(num==0):
+                    continue
+                if(num == 1):
+                    newboard = newboard.opposingBoard()
+                value = min(value, newboard.abminimax(depth-1,alpha,beta))
+                beta = min(beta,value)
+                if(beta <= alpha):
+                    break
+            return value
+
+def minmaxgameloop():   
+    numgames = 0
+    numwins = 0 
+    games = []        
+    plt.plot(games)   
+    board = Board()
+    while True:
+        print('\x1bc')
+        print(board)
+        gameover = board.isGameOver()
+        num = "stop"
+        if(not gameover):
+            if(board.player):
+                num = random.randint(0,5)
+                #num = input("Index of piece to move: ")
+                num = board.makeDecision(2)
+            else:
+                num = board.makeDecision(2,False)
+        if(num == "stop"):
+            scoredel = (1 if board.player else -1) * (board.scoreDelta())
+            winner = "Player 1!" if scoredel>0 else "Player 2!"
+            winner = "Draw" if scoredel == 0 else winner 
+            if(winner=="Player 2!"):
+                numwins += 1
+            print("Winner: "+winner)
+            playAgain = 'y'#input("Play Again?(Y/N)")
+            if(playAgain.lower() == 'y'):
+                numgames+=1
+                games.append(numwins/(numgames+0.0))
+                plt.plot(games,'k')
+                plt.pause(0.02)
+
+                board = Board()
+                continue
+            else:
+                print("Game Done")
+                break
+        num = int(num)
+        if(board.movePiece(num)==1):
+            board = board.opposingBoard()
+
+
+if __name__ == "__main__":
+    minmaxgameloop()
     
 
     

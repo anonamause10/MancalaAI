@@ -94,8 +94,9 @@ class Brain:
 
 
             
-        
-brain = Brain([10,10,10],14,6,True)
-brain.mutate()
-brain.save()
-#print(brain.actionindex(brain.evaluate(np.array([4,4,4,4,4,4,0,4,4,4,4,4,4,0]))))
+
+if __name__ == "__main__":      
+    brain = Brain([10,10,10],14,6,True)
+    brain.mutate()
+    brain.save()
+    #print(brain.actionindex(brain.evaluate(np.array([4,4,4,4,4,4,0,4,4,4,4,4,4,0]))))

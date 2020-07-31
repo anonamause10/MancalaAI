@@ -49,6 +49,8 @@ class DataManager:
         np.save("gamedata/top4winrate",self.top4winrate)
         np.save("gamedata/mutation",self.mutation)
 
-data = DataManager(True)
-data.save()
+
+if __name__ == "__main__":
+    data = DataManager(True)
+    data.save()
         
