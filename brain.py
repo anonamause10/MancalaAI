@@ -3,7 +3,7 @@ import os
 
 class Brain:
     
-    def __init__(self,hiddenlayersizes,numinputs, numoutputs, load = False):
+    def __init__(self,hiddenlayersizes=[10,10],numinputs=14, numoutputs=6, load = False):
         if(load):
             if(self.load()):
                 return

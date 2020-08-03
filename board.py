@@ -14,6 +14,7 @@ class Board:
         newarr = array[:]
         self.board = newarr
         self.player = player
+        self.total = sum(self.board)
 
     def opposingBoard(self):
         newboard = [0]*len(self.board)
@@ -132,7 +133,7 @@ class Board:
         return Board(self.board,self.player)
 
     def abminimax(self, depth, alpha = float('-inf'), beta = float('inf'),overall=True):
-        if(depth == 0 or self.isGameOver()):
+        if(depth <= 0 or self.isGameOver()):
             return ((self.overallScoreDel() if overall else self.scoreDelta()) * (1 if self.player else -1))
         if(self.player):
             value = float('-inf')

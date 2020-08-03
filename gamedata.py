@@ -9,10 +9,10 @@ class DataManager:
                 return
         self.winrate = []
         self.avgscore = []
-        self.top4winrate = []
+        self.top4score = []
         for i in range(4):
-            self.top4winrate.append([])
-        self.mutation = []
+            self.top4score.append([])
+        self.fitness = []
 
     def winrateaddpoint(self,val):
         self.winrate.append(val)
@@ -20,14 +20,14 @@ class DataManager:
     def avgscoreaddpoint(self,val):
         self.avgscore.append(val)
 
-    def top4winrateaddpoints(self,vals):
+    def top4scoreaddpoints(self,vals):
         i = 0
-        for rate in self.top4winrate:
+        for rate in self.top4score:
             rate.append(vals[i])
             i+=1
 
-    def mutationaddpoint(self,val):
-        self.mutation.append(val)
+    def fitnessaddpoint(self,val):
+        self.fitness.append(val)
 
     def display(self):
         print("does nothing yet lol")
@@ -36,8 +36,8 @@ class DataManager:
         try:
             self.winrate = np.load("gamedata/winrate.npy").tolist()
             self.avgscore = np.load("gamedata/avgscore.npy").tolist()
-            self.top4winrate = np.load("gamedata/top4winrate.npy").tolist()
-            self.mutation = np.load("gamedata/mutation.npy").tolist()
+            self.top4score = np.load("gamedata/top4score.npy").tolist()
+            self.fitness = np.load("gamedata/fitness.npy").tolist()
             return True
         except FileNotFoundError:
             print("no data files, creating new ones")
@@ -46,11 +46,8 @@ class DataManager:
     def save(self):
         np.save("gamedata/winrate",self.winrate)
         np.save("gamedata/avgscore",self.avgscore)
-        np.save("gamedata/top4winrate",self.top4winrate)
-        np.save("gamedata/mutation",self.mutation)
+        np.save("gamedata/top4score",self.top4score)
+        np.save("gamedata/fitness",self.fitness)
 
 
-if __name__ == "__main__":
-    data = DataManager(True)
-    data.save()
         
