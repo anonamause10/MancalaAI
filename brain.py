@@ -36,7 +36,8 @@ class Brain:
         
         return output
 
-    def actionindex(self,outputvec):
+    def actionindex(self,outputvec,legals = [True]*6):
+        outputvec = [outputvec[i] if legals[i] else -100000000 for i in range(len(outputvec))]
         return np.argmax(outputvec)
 
     def mutate(self,weightfactor = 1,biasfactor = 1):
