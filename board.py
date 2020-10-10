@@ -205,6 +205,7 @@ def minmaxgameloop():
             print("Winner: "+winner)
             playAgain = 'y'#input("Play Again?(Y/N)")
             if(playAgain.lower() == 'y'):
+                #hmm
                 numgames+=1
                 games1.append(numwins1/(numgames+0.0))
                 games2.append(numwins2/(numgames+0.0))
