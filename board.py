@@ -75,6 +75,10 @@ class Board:
             self.board[len(self.board)-1] += self.board[int(len(self.board)/2)+i]
             self.board[int(len(self.board)/2)+i] = 0
 
+    def legalspots(self):
+        #true for legal, false for illegal
+        return [stones>0 for stones in self.board[0:int(len(self.board)/2)-1]]
+
     def score(self):
         return self.board[int(len(self.board)/2)]
 
